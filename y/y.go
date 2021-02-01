@@ -24,7 +24,6 @@ import (
 	"io"
 	"math"
 	"os"
-	"reflect"
 	"sync"
 	"time"
 	"unsafe"
@@ -278,11 +277,14 @@ func U32SliceToBytes(u32s []uint32) []byte {
 	if len(u32s) == 0 {
 		return nil
 	}
-	var b []byte
-	hdr := (*reflect.SliceHeader)(unsafe.Pointer(&b))
-	hdr.Len = len(u32s) * 4
-	hdr.Cap = hdr.Len
-	hdr.Data = uintptr(unsafe.Pointer(&u32s[0]))
+	b := make([]byte, len(u32s)*4)
+	for i, u := range u32s {
+		binary.BigEndian.PutUint32(b[4*i:4*(i+1)], u)
+	}
+	// hdr := (*reflect.SliceHeader)(unsafe.Pointer(&b))
+	// hdr.Len = len(u32s) * 4
+	// hdr.Cap = hdr.Len
+	// hdr.Data = uintptr(unsafe.Pointer(&u32s[0]))
 	return b
 }
 
@@ -291,11 +293,14 @@ func BytesToU32Slice(b []byte) []uint32 {
 	if len(b) == 0 {
 		return nil
 	}
-	var u32s []uint32
-	hdr := (*reflect.SliceHeader)(unsafe.Pointer(&u32s))
-	hdr.Len = len(b) / 4
-	hdr.Cap = hdr.Len
-	hdr.Data = uintptr(unsafe.Pointer(&b[0]))
+	u32s := make([]uint32, len(b)/4)
+	for i := 0; i < len(u32s); i++ {
+		u32s[i] = binary.BigEndian.Uint32(b[4*i : 4*(i+1)])
+	}
+	// hdr := (*reflect.SliceHeader)(unsafe.Pointer(&u32s))
+	// hdr.Len = len(b) / 4
+	// hdr.Cap = hdr.Len
+	// hdr.Data = uintptr(unsafe.Pointer(&b[0]))
 	return u32s
 }
 
