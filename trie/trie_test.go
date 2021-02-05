@@ -104,7 +104,7 @@ func TestPrefixMatchWithHoles(t *testing.T) {
 	trie := NewTrie()
 
 	add := func(prefix, ignore string, id uint64) {
-		m := pb.Match{
+		m := &pb.Match{
 			Prefix:      []byte(prefix),
 			IgnoreBytes: ignore,
 		}
@@ -147,7 +147,7 @@ func TestPrefixMatchWithHoles(t *testing.T) {
 	t.Logf("Num nodes: %d", numNodes(trie.root))
 
 	del := func(prefix, ignore string, id uint64) {
-		m := pb.Match{
+		m := &pb.Match{
 			Prefix:      []byte(prefix),
 			IgnoreBytes: ignore,
 		}

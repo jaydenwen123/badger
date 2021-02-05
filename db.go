@@ -1830,7 +1830,7 @@ type KVList = pb.KVList
 // This function blocks until the given context is done or an error occurs.
 // The given function will be called with a new KVList containing the modified keys and the
 // corresponding values.
-func (db *DB) Subscribe(ctx context.Context, cb func(kv *KVList) error, matches []pb.Match) error {
+func (db *DB) Subscribe(ctx context.Context, cb func(kv *KVList) error, matches []*pb.Match) error {
 	if cb == nil {
 		return ErrNilCallback
 	}

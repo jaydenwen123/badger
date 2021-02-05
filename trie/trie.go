@@ -106,7 +106,7 @@ func parseIgnoreBytes(ig string) ([]bool, error) {
 
 // Add adds the id in the trie for the given prefix path.
 func (t *Trie) Add(prefix []byte, id uint64) {
-	m := pb.Match{
+	m := &pb.Match{
 		Prefix: prefix,
 	}
 	y.Check(t.AddMatch(m, id))
@@ -119,7 +119,7 @@ func (t *Trie) Add(prefix []byte, id uint64) {
 //
 // Consider a prefix = "aaaa". If the IgnoreBytes is set to "0, 2", then along with key "aaaa...",
 // a key "baba..." would also match.
-func (t *Trie) AddMatch(m pb.Match, id uint64) error {
+func (t *Trie) AddMatch(m *pb.Match, id uint64) error {
 	return t.fix(m, id, set)
 }
 
@@ -128,7 +128,7 @@ const (
 	del
 )
 
-func (t *Trie) fix(m pb.Match, id uint64, op int) error {
+func (t *Trie) fix(m *pb.Match, id uint64, op int) error {
 	curNode := t.root
 
 	ignore, err := parseIgnoreBytes(m.IgnoreBytes)
@@ -236,10 +236,10 @@ func removeEmpty(curNode *node) bool {
 
 // Delete will delete the id if the id exist in the given index path.
 func (t *Trie) Delete(prefix []byte, id uint64) error {
-	return t.DeleteMatch(pb.Match{Prefix: prefix}, id)
+	return t.DeleteMatch(&pb.Match{Prefix: prefix}, id)
 }
 
-func (t *Trie) DeleteMatch(m pb.Match, id uint64) error {
+func (t *Trie) DeleteMatch(m *pb.Match, id uint64) error {
 	if err := t.fix(m, id, del); err != nil {
 		return err
 	}

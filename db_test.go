@@ -1847,13 +1847,13 @@ func TestGoroutineLeak(t *testing.T) {
 				var wg sync.WaitGroup
 				wg.Add(1)
 				go func() {
-					match := pb.Match{Prefix: []byte("key"), IgnoreBytes: ""}
+					match := &pb.Match{Prefix: []byte("key"), IgnoreBytes: ""}
 					err := db.Subscribe(ctx, func(kvs *pb.KVList) error {
 						require.Equal(t, []byte("value"), kvs.Kv[0].GetValue())
 						updated = true
 						wg.Done()
 						return nil
-					}, []pb.Match{match})
+					}, []*pb.Match{match})
 					if err != nil {
 						require.Equal(t, err.Error(), context.Canceled.Error())
 					}
